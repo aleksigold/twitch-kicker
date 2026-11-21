@@ -2,40 +2,59 @@
   "name": "twitch-kicker",
   "version": "1.0.0",
   "description": "Replaces the Twitch video player with the Kick stream player for whitelisted streamers while keeping Twitch chat and layout intact.",
-  "type": "module",
-  "main": "dist/twitch-kicker.user.js",
+  "keywords": [
+    "kick",
+    "tampermonkey",
+    "twitch",
+    "userscript"
+  ],
+  "homepage": "https://github.com/aleksigold/twitch-kicker#readme",
+  "bugs": {
+    "url": "https://github.com/aleksigold/twitch-kicker/issues"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/aleksigold/twitch-kicker.git"
   },
-  "homepage": "https://github.com/aleksigold/twitch-kicker#readme",
-  "bugs": {
-    "url": "https://github.com/aleksigold/twitch-kicker/issues"
-  },
+  "type": "module",
+  "main": "dist/twitch-kicker.user.js",
   "scripts": {
+    "format": "oxfmt",
+    "format:check": "npm run format -- --check",
+    "lint": "oxlint --type-aware --deny-warnings",
+    "lint:fix": "npm run lint -- --fix",
     "typecheck": "tsc --noEmit",
     "build": "vite build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "start": "vite"
+    "start": "vite",
+    "prepare": "husky"
   },
-  "keywords": [
-    "tampermonkey",
-    "userscript",
-    "twitch",
-    "kick"
-  ],
+  "dependencies": {
+    "hls.js": "^1.7.4"
+  },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.1",
     "happy-dom": "^21.0.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.1",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "oxlint-tsgolint": "^7.0.2008",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
     "vitest": "^5.1.1"
   },
-  "dependencies": {
-    "hls.js": "^1.7.4"
+  "lint-staged": {
+    "*.{ts,mts,cts,js,mjs,cjs}": [
+      "oxlint --type-aware --deny-warnings --fix",
+      "oxfmt --no-error-on-unmatched-pattern"
+    ],
+    "*.{json,css,md,yml,yaml}": [
+      "oxfmt --no-error-on-unmatched-pattern"
+    ]
   }
 }

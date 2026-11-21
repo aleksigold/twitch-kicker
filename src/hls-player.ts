@@ -1,6 +1,6 @@
-import Hls, { type Level } from 'hls.js';
-import type { Settings } from './config';
-import { GmHlsLoader } from './hls-loader';
+import Hls, { type Level } from "hls.js";
+import type { Settings } from "./config";
+import { GmHlsLoader } from "./hls-loader";
 
 export interface HlsPlayerCallbacks {
   onVolumeChange: (volume: number) => void;
@@ -9,7 +9,7 @@ export interface HlsPlayerCallbacks {
 
 function formatQualityLabel(level: Level): string {
   const height = level.height ? `${level.height}p` : `${Math.round(level.bitrate / 1000)}k`;
-  const fps = level.frameRate && level.frameRate >= 50 ? `${Math.round(level.frameRate)}` : '';
+  const fps = level.frameRate && level.frameRate >= 50 ? `${Math.round(level.frameRate)}` : "";
   return `${height}${fps}`;
 }
 
@@ -18,78 +18,78 @@ export function mountHlsPlayer(
   playbackUrl: string,
   kickChannel: string,
   settings: Settings,
-  callbacks: HlsPlayerCallbacks
+  callbacks: HlsPlayerCallbacks,
 ): () => void {
   overlay.replaceChildren();
 
-  const video = document.createElement('video');
-  video.className = 'tk-hls-video';
+  const video = document.createElement("video");
+  video.className = "tk-hls-video";
   video.playsInline = true;
   video.muted = settings.muted;
   video.volume = settings.volume;
-  video.setAttribute('aria-label', `Kick stream for ${kickChannel}`);
+  video.setAttribute("aria-label", `Kick stream for ${kickChannel}`);
 
-  const controls = document.createElement('div');
-  controls.className = 'tk-hls-controls';
+  const controls = document.createElement("div");
+  controls.className = "tk-hls-controls";
 
-  const leftGroup = document.createElement('div');
-  leftGroup.className = 'tk-hls-controls-group';
+  const leftGroup = document.createElement("div");
+  leftGroup.className = "tk-hls-controls-group";
 
-  const playBtn = document.createElement('button');
-  playBtn.type = 'button';
-  playBtn.className = 'tk-hls-btn';
-  playBtn.title = 'Play / Pause';
-  playBtn.textContent = '❚❚';
+  const playBtn = document.createElement("button");
+  playBtn.type = "button";
+  playBtn.className = "tk-hls-btn";
+  playBtn.title = "Play / Pause";
+  playBtn.textContent = "❚❚";
 
-  const muteBtn = document.createElement('button');
-  muteBtn.type = 'button';
-  muteBtn.className = 'tk-hls-btn';
-  muteBtn.title = 'Mute / Unmute';
+  const muteBtn = document.createElement("button");
+  muteBtn.type = "button";
+  muteBtn.className = "tk-hls-btn";
+  muteBtn.title = "Mute / Unmute";
 
-  const volumeSlider = document.createElement('input');
-  volumeSlider.type = 'range';
-  volumeSlider.className = 'tk-hls-volume';
-  volumeSlider.min = '0';
-  volumeSlider.max = '1';
-  volumeSlider.step = '0.02';
+  const volumeSlider = document.createElement("input");
+  volumeSlider.type = "range";
+  volumeSlider.className = "tk-hls-volume";
+  volumeSlider.min = "0";
+  volumeSlider.max = "1";
+  volumeSlider.step = "0.02";
   volumeSlider.value = String(settings.muted ? 0 : settings.volume);
-  volumeSlider.setAttribute('aria-label', 'Volume');
+  volumeSlider.setAttribute("aria-label", "Volume");
 
-  const liveBtn = document.createElement('button');
-  liveBtn.type = 'button';
-  liveBtn.className = 'tk-hls-live-btn';
-  liveBtn.title = 'Jump to live edge';
-  const liveDot = document.createElement('span');
-  liveDot.className = 'tk-kick-dot';
-  liveBtn.append(liveDot, document.createTextNode('LIVE'));
+  const liveBtn = document.createElement("button");
+  liveBtn.type = "button";
+  liveBtn.className = "tk-hls-live-btn";
+  liveBtn.title = "Jump to live edge";
+  const liveDot = document.createElement("span");
+  liveDot.className = "tk-kick-dot";
+  liveBtn.append(liveDot, document.createTextNode("LIVE"));
 
   leftGroup.append(playBtn, muteBtn, volumeSlider, liveBtn);
 
-  const rightGroup = document.createElement('div');
-  rightGroup.className = 'tk-hls-controls-group';
+  const rightGroup = document.createElement("div");
+  rightGroup.className = "tk-hls-controls-group";
 
-  const qualitySelect = document.createElement('select');
-  qualitySelect.className = 'tk-hls-quality';
-  qualitySelect.setAttribute('aria-label', 'Stream quality');
-  const autoOption = document.createElement('option');
-  autoOption.value = '-1';
-  autoOption.textContent = 'Auto';
+  const qualitySelect = document.createElement("select");
+  qualitySelect.className = "tk-hls-quality";
+  qualitySelect.setAttribute("aria-label", "Stream quality");
+  const autoOption = document.createElement("option");
+  autoOption.value = "-1";
+  autoOption.textContent = "Auto";
   qualitySelect.appendChild(autoOption);
 
-  const pipBtn = document.createElement('button');
-  pipBtn.type = 'button';
-  pipBtn.className = 'tk-hls-btn';
-  pipBtn.textContent = 'PiP';
-  pipBtn.title = 'Picture-in-Picture';
-  if (!('pictureInPictureEnabled' in document) || !document.pictureInPictureEnabled) {
-    pipBtn.style.display = 'none';
+  const pipBtn = document.createElement("button");
+  pipBtn.type = "button";
+  pipBtn.className = "tk-hls-btn";
+  pipBtn.textContent = "PiP";
+  pipBtn.title = "Picture-in-Picture";
+  if (!("pictureInPictureEnabled" in document) || !document.pictureInPictureEnabled) {
+    pipBtn.style.display = "none";
   }
 
-  const fullscreenBtn = document.createElement('button');
-  fullscreenBtn.type = 'button';
-  fullscreenBtn.className = 'tk-hls-btn';
-  fullscreenBtn.textContent = '⛶';
-  fullscreenBtn.title = 'Fullscreen';
+  const fullscreenBtn = document.createElement("button");
+  fullscreenBtn.type = "button";
+  fullscreenBtn.className = "tk-hls-btn";
+  fullscreenBtn.textContent = "⛶";
+  fullscreenBtn.title = "Fullscreen";
 
   rightGroup.append(qualitySelect, pipBtn, fullscreenBtn);
   controls.append(leftGroup, rightGroup);
@@ -101,23 +101,23 @@ export function mountHlsPlayer(
   let destroyed = false;
 
   const updatePlayIcon = (): void => {
-    playBtn.textContent = video.paused ? '▶' : '❚❚';
-    overlay.classList.toggle('tk-hls-paused', video.paused);
+    playBtn.textContent = video.paused ? "▶" : "❚❚";
+    overlay.classList.toggle("tk-hls-paused", video.paused);
   };
 
   const updateMuteIcon = (): void => {
     const effectivelyMuted = video.muted || video.volume === 0;
-    muteBtn.textContent = effectivelyMuted ? '🔇' : video.volume < 0.5 ? '🔉' : '🔊';
+    muteBtn.textContent = effectivelyMuted ? "🔇" : video.volume < 0.5 ? "🔉" : "🔊";
     volumeSlider.value = String(effectivelyMuted ? 0 : video.volume);
   };
 
   const bumpControlsVisibility = (): void => {
-    overlay.classList.add('tk-hls-controls-visible');
+    overlay.classList.add("tk-hls-controls-visible");
     if (idleTimer !== null) clearTimeout(idleTimer);
     idleTimer = setTimeout(() => {
       idleTimer = null;
       if (!video.paused) {
-        overlay.classList.remove('tk-hls-controls-visible');
+        overlay.classList.remove("tk-hls-controls-visible");
       }
     }, 2500);
   };
@@ -138,22 +138,22 @@ export function mountHlsPlayer(
     }
   };
 
-  playBtn.addEventListener('click', (e) => {
+  playBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     togglePlay();
   });
 
-  video.addEventListener('click', (e) => {
+  video.addEventListener("click", (e) => {
     e.stopPropagation();
     togglePlay();
   });
 
-  video.addEventListener('dblclick', (e) => {
+  video.addEventListener("dblclick", (e) => {
     e.stopPropagation();
     toggleFullscreen();
   });
 
-  muteBtn.addEventListener('click', (e) => {
+  muteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     if (video.muted || video.volume === 0) {
       video.muted = false;
@@ -166,7 +166,7 @@ export function mountHlsPlayer(
     updateMuteIcon();
   });
 
-  volumeSlider.addEventListener('input', (e) => {
+  volumeSlider.addEventListener("input", (e) => {
     e.stopPropagation();
     const vol = Number.parseFloat(volumeSlider.value);
     if (Number.isFinite(vol)) {
@@ -177,9 +177,9 @@ export function mountHlsPlayer(
     }
   });
 
-  liveBtn.addEventListener('click', (e) => {
+  liveBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (hls && typeof hls.liveSyncPosition === 'number' && Number.isFinite(hls.liveSyncPosition)) {
+    if (hls && typeof hls.liveSyncPosition === "number" && Number.isFinite(hls.liveSyncPosition)) {
       video.currentTime = hls.liveSyncPosition;
     } else if (video.seekable.length > 0) {
       video.currentTime = video.seekable.end(video.seekable.length - 1);
@@ -189,7 +189,7 @@ export function mountHlsPlayer(
     }
   });
 
-  qualitySelect.addEventListener('change', (e) => {
+  qualitySelect.addEventListener("change", (e) => {
     e.stopPropagation();
     if (!hls) return;
     const selected = Number.parseInt(qualitySelect.value, 10);
@@ -203,7 +203,7 @@ export function mountHlsPlayer(
     }
   });
 
-  pipBtn.addEventListener('click', (e) => {
+  pipBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     if (document.pictureInPictureElement === video) {
       void document.exitPictureInPicture?.();
@@ -212,21 +212,21 @@ export function mountHlsPlayer(
     }
   });
 
-  fullscreenBtn.addEventListener('click', (e) => {
+  fullscreenBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     toggleFullscreen();
   });
 
   const onMouseMove = (): void => bumpControlsVisibility();
   const onMouseLeave = (): void => {
-    if (!video.paused) overlay.classList.remove('tk-hls-controls-visible');
+    if (!video.paused) overlay.classList.remove("tk-hls-controls-visible");
   };
 
-  video.addEventListener('play', updatePlayIcon);
-  video.addEventListener('pause', updatePlayIcon);
-  video.addEventListener('volumechange', updateMuteIcon);
-  overlay.addEventListener('mousemove', onMouseMove);
-  overlay.addEventListener('mouseleave', onMouseLeave);
+  video.addEventListener("play", updatePlayIcon);
+  video.addEventListener("pause", updatePlayIcon);
+  video.addEventListener("volumechange", updateMuteIcon);
+  overlay.addEventListener("mousemove", onMouseMove);
+  overlay.addEventListener("mouseleave", onMouseLeave);
 
   updatePlayIcon();
   updateMuteIcon();
@@ -255,14 +255,14 @@ export function mountHlsPlayer(
       abrBandWidthFactor: 0.95,
       abrBandWidthUpFactor: 0.85,
       capLevelToPlayerSize: false,
-      ...(typeof GM_xmlhttpRequest === 'function' ? { loader: GmHlsLoader } : {}),
+      ...(typeof GM_xmlhttpRequest === "function" ? { loader: GmHlsLoader } : {}),
     });
 
     const updateAutoOptionLabel = (activeLevelIndex: number): void => {
       const opt = qualitySelect.querySelector<HTMLOptionElement>('option[value="-1"]');
       if (!opt || !hls) return;
       const lvl = hls.levels[activeLevelIndex];
-      opt.textContent = lvl ? `Auto (${formatQualityLabel(lvl)})` : 'Auto';
+      opt.textContent = lvl ? `Auto (${formatQualityLabel(lvl)})` : "Auto";
     };
 
     hls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
@@ -279,13 +279,13 @@ export function mountHlsPlayer(
           return (b.level.bitrate || 0) - (a.level.bitrate || 0);
         });
 
-      const autoOpt = document.createElement('option');
-      autoOpt.value = '-1';
-      autoOpt.textContent = 'Auto';
+      const autoOpt = document.createElement("option");
+      autoOpt.value = "-1";
+      autoOpt.textContent = "Auto";
       qualitySelect.appendChild(autoOpt);
 
       for (const { level, index } of sorted) {
-        const opt = document.createElement('option');
+        const opt = document.createElement("option");
         opt.value = String(index);
         opt.textContent = formatQualityLabel(level);
         qualitySelect.appendChild(opt);
@@ -293,7 +293,7 @@ export function mountHlsPlayer(
 
       // Default to Auto ABR
       hls.currentLevel = -1;
-      qualitySelect.value = '-1';
+      qualitySelect.value = "-1";
 
       startPlayback();
     });
@@ -319,7 +319,7 @@ export function mountHlsPlayer(
 
     hls.loadSource(playbackUrl);
     hls.attachMedia(video);
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
     video.src = playbackUrl;
     startPlayback();
   } else {
@@ -333,14 +333,14 @@ export function mountHlsPlayer(
       clearTimeout(idleTimer);
       idleTimer = null;
     }
-    overlay.removeEventListener('mousemove', onMouseMove);
-    overlay.removeEventListener('mouseleave', onMouseLeave);
+    overlay.removeEventListener("mousemove", onMouseMove);
+    overlay.removeEventListener("mouseleave", onMouseLeave);
     if (hls) {
       hls.destroy();
       hls = null;
     }
     video.pause();
-    video.removeAttribute('src');
+    video.removeAttribute("src");
     video.load?.();
   }
 

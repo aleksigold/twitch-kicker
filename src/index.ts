@@ -1,5 +1,5 @@
-import { IDS, LIVE_CHECK_CACHE_TTL_MS, type AppState } from './config';
-import { findLiveMatchingKickStream } from './kick-api';
+import { IDS, LIVE_CHECK_CACHE_TTL_MS, type AppState } from "./config";
+import { findLiveMatchingKickStream } from "./kick-api";
 import {
   findActionBarContainer,
   findPlayerContainer,
@@ -11,21 +11,21 @@ import {
   silenceTwitchVideos,
   unmountKickOverlay,
   type PlayerCallbacks,
-} from './player';
+} from "./player";
 import {
   getTwitchChannelFromPathname,
   loadSettings,
   loadWhitelist,
   normalizeChannelInput,
   saveWhitelist,
-} from './storage';
-import { injectStyles } from './styles';
+} from "./storage";
+import { injectStyles } from "./styles";
 import {
   closeWhitelistModal,
   mountSuggestionBanner,
   openWhitelistModal,
   removeSuggestionBanner,
-} from './ui';
+} from "./ui";
 
 const state: AppState = {
   whitelist: loadWhitelist(),
@@ -146,22 +146,22 @@ function scheduleSync(delayMs = 150): void {
 }
 
 function registerMenuCommands(): void {
-  if (typeof GM_registerMenuCommand !== 'function') return;
+  if (typeof GM_registerMenuCommand !== "function") return;
 
-  GM_registerMenuCommand('Manage Kick Whitelist', () => {
+  GM_registerMenuCommand("Manage Kick Whitelist", () => {
     openWhitelistModal(state, syncPlayer);
   });
 
-  GM_registerMenuCommand('Add / Remove Current Channel', () => {
+  GM_registerMenuCommand("Add / Remove Current Channel", () => {
     const twitchChannel = getTwitchChannelFromPathname(location.pathname);
     if (!twitchChannel) {
-      alert('Navigate to a Twitch channel page first (e.g. twitch.tv/username).');
+      alert("Navigate to a Twitch channel page first (e.g. twitch.tv/username).");
       return;
     }
 
     if (state.whitelist[twitchChannel]) {
       const confirmed = confirm(
-        `Remove "${twitchChannel}" (Kick: ${state.whitelist[twitchChannel]}) from your Kick whitelist?`
+        `Remove "${twitchChannel}" (Kick: ${state.whitelist[twitchChannel]}) from your Kick whitelist?`,
       );
       if (!confirmed) return;
       const next = { ...state.whitelist };
@@ -172,7 +172,7 @@ function registerMenuCommands(): void {
     } else {
       const kickInput = prompt(
         `Enter the Kick username for Twitch channel "${twitchChannel}":`,
-        twitchChannel
+        twitchChannel,
       );
       if (kickInput === null) return;
       const kickChannel = normalizeChannelInput(kickInput || twitchChannel);
@@ -186,10 +186,10 @@ function registerMenuCommands(): void {
     }
   });
 
-  GM_registerMenuCommand('Toggle Kick / Twitch Player', () => {
+  GM_registerMenuCommand("Toggle Kick / Twitch Player", () => {
     const twitchChannel = getTwitchChannelFromPathname(location.pathname);
     if (!twitchChannel || !state.whitelist[twitchChannel]) {
-      alert('Current page is not a whitelisted Twitch channel.');
+      alert("Current page is not a whitelisted Twitch channel.");
       return;
     }
     if (state.disabledChannels.has(twitchChannel)) {
@@ -201,40 +201,32 @@ function registerMenuCommands(): void {
   });
 }
 
+function notifyNavigation(): void {
+  if (location.href !== state.lastHref) {
+    state.lastHref = location.href;
+    scheduleSync(50);
+  }
+}
+
 function hookHistoryNavigation(): () => void {
-  const notify = (): void => {
-    if (location.href !== state.lastHref) {
-      state.lastHref = location.href;
-      scheduleSync(50);
-    }
+  const origPushState = history.pushState.bind(history);
+  history.pushState = function (data: unknown, unused: string, url?: string | URL | null): void {
+    origPushState(data, unused, url);
+    notifyNavigation();
   };
 
-  const origPushState = history.pushState;
-  history.pushState = function (
-    data: unknown,
-    unused: string,
-    url?: string | URL | null
-  ): void {
-    origPushState.call(history, data, unused, url);
-    notify();
+  const origReplaceState = history.replaceState.bind(history);
+  history.replaceState = function (data: unknown, unused: string, url?: string | URL | null): void {
+    origReplaceState(data, unused, url);
+    notifyNavigation();
   };
 
-  const origReplaceState = history.replaceState;
-  history.replaceState = function (
-    data: unknown,
-    unused: string,
-    url?: string | URL | null
-  ): void {
-    origReplaceState.call(history, data, unused, url);
-    notify();
-  };
-
-  window.addEventListener('popstate', notify);
+  window.addEventListener("popstate", notifyNavigation);
 
   return () => {
     history.pushState = origPushState;
     history.replaceState = origReplaceState;
-    window.removeEventListener('popstate', notify);
+    window.removeEventListener("popstate", notifyNavigation);
   };
 }
 
@@ -256,7 +248,12 @@ function startObserver(): () => void {
         state.settings.showBadge &&
         (!controls || !controls.isConnected || controls.dataset.kickChannel !== kickChannel);
 
-      if (!overlay || !overlay.isConnected || state.activeKickChannel !== kickChannel || needsControls) {
+      if (
+        !overlay ||
+        !overlay.isConnected ||
+        state.activeKickChannel !== kickChannel ||
+        needsControls
+      ) {
         scheduleSync(150);
       } else if (state.activeContainer) {
         const now = Date.now();
@@ -320,5 +317,5 @@ function init(): void {
 if (document.body) {
   init();
 } else {
-  window.addEventListener('DOMContentLoaded', init, { once: true });
+  window.addEventListener("DOMContentLoaded", init, { once: true });
 }

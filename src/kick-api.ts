@@ -3,12 +3,12 @@ import {
   LIVE_CHECK_TIMEOUT_MS,
   type AppState,
   type KickLiveMatch,
-} from './config';
+} from "./config";
 
 function getCandidateKickSlugs(twitchChannel: string): string[] {
   const candidates = [twitchChannel];
-  if (twitchChannel.includes('_')) {
-    const hyphenated = twitchChannel.replace(/_/g, '-');
+  if (twitchChannel.includes("_")) {
+    const hyphenated = twitchChannel.replace(/_/g, "-");
     if (hyphenated !== twitchChannel) {
       candidates.push(hyphenated);
     }
@@ -16,18 +16,17 @@ function getCandidateKickSlugs(twitchChannel: string): string[] {
   return candidates;
 }
 
-function parseKickLivestreamPayload(
-  rawText: string,
-  kickChannel: string
-): KickLiveMatch | null {
+function parseKickLivestreamPayload(rawText: string, kickChannel: string): KickLiveMatch | null {
   try {
     const parsed: unknown = JSON.parse(rawText);
-    if (!parsed || typeof parsed !== 'object') return null;
+    if (!parsed || typeof parsed !== "object") return null;
 
     const root = parsed as Record<string, unknown>;
     const streamObj =
-      (root.data && typeof root.data === 'object' ? (root.data as Record<string, unknown>) : null) ||
-      (root.livestream && typeof root.livestream === 'object'
+      (root.data && typeof root.data === "object"
+        ? (root.data as Record<string, unknown>)
+        : null) ||
+      (root.livestream && typeof root.livestream === "object"
         ? (root.livestream as Record<string, unknown>)
         : null);
 
@@ -35,21 +34,22 @@ function parseKickLivestreamPayload(
 
     const isLive =
       streamObj.is_live === true ||
-      (streamObj.is_live !== false && typeof streamObj.id === 'number');
+      (streamObj.is_live !== false && typeof streamObj.id === "number");
     if (!isLive) return null;
 
-    const title = typeof streamObj.session_title === 'string' ? streamObj.session_title.trim() : null;
-    const viewerCount = typeof streamObj.viewer_count === 'number' ? streamObj.viewer_count : null;
+    const title =
+      typeof streamObj.session_title === "string" ? streamObj.session_title.trim() : null;
+    const viewerCount = typeof streamObj.viewer_count === "number" ? streamObj.viewer_count : null;
 
     let category: string | null = null;
-    if (streamObj.category && typeof streamObj.category === 'object') {
+    if (streamObj.category && typeof streamObj.category === "object") {
       const catName = (streamObj.category as Record<string, unknown>).name;
-      if (typeof catName === 'string' && catName.trim()) category = catName.trim();
+      if (typeof catName === "string" && catName.trim()) category = catName.trim();
     } else if (Array.isArray(streamObj.categories) && streamObj.categories.length > 0) {
       const first = streamObj.categories[0];
-      if (first && typeof first === 'object') {
+      if (first && typeof first === "object") {
         const catName = (first as Record<string, unknown>).name;
-        if (typeof catName === 'string' && catName.trim()) category = catName.trim();
+        if (typeof catName === "string" && catName.trim()) category = catName.trim();
       }
     }
 
@@ -65,17 +65,17 @@ function parseKickLivestreamPayload(
 }
 
 function fetchKickLivestream(kickChannel: string): Promise<KickLiveMatch | null> {
-  if (typeof GM_xmlhttpRequest !== 'function') {
+  if (typeof GM_xmlhttpRequest !== "function") {
     return Promise.resolve(null);
   }
 
   return new Promise((resolve) => {
     try {
       GM_xmlhttpRequest({
-        method: 'GET',
+        method: "GET",
         url: `https://kick.com/api/v2/channels/${encodeURIComponent(kickChannel)}/livestream`,
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
         },
         timeout: LIVE_CHECK_TIMEOUT_MS,
         onload: (response) => {
@@ -96,7 +96,7 @@ function fetchKickLivestream(kickChannel: string): Promise<KickLiveMatch | null>
 
 export function findLiveMatchingKickStream(
   state: AppState,
-  twitchChannel: string
+  twitchChannel: string,
 ): Promise<KickLiveMatch | null> {
   const cached = state.liveCheckCache.get(twitchChannel);
   if (cached && Date.now() - cached.checkedAt < LIVE_CHECK_CACHE_TTL_MS) {
@@ -134,19 +134,19 @@ export function findLiveMatchingKickStream(
 function parsePlaybackUrl(rawText: string): string | null {
   try {
     const parsed: unknown = JSON.parse(rawText);
-    if (!parsed || typeof parsed !== 'object') return null;
+    if (!parsed || typeof parsed !== "object") return null;
 
     const root = parsed as Record<string, unknown>;
     const livestream = root.livestream;
-    if (!livestream || typeof livestream !== 'object') return null;
+    if (!livestream || typeof livestream !== "object") return null;
 
     const streamObj = livestream as Record<string, unknown>;
     if (streamObj.is_live === false) return null;
 
     const rawUrl = root.playback_url;
-    if (typeof rawUrl !== 'string' || !rawUrl.trim()) return null;
+    if (typeof rawUrl !== "string" || !rawUrl.trim()) return null;
 
-    const normalized = rawUrl.trim().replace(/\\\//g, '/');
+    const normalized = rawUrl.trim().replace(/\\\//g, "/");
     return /^https?:\/\//i.test(normalized) ? normalized : null;
   } catch {
     return null;
@@ -154,17 +154,17 @@ function parsePlaybackUrl(rawText: string): string | null {
 }
 
 export function fetchKickPlaybackUrl(kickChannel: string): Promise<string | null> {
-  if (typeof GM_xmlhttpRequest !== 'function') {
+  if (typeof GM_xmlhttpRequest !== "function") {
     return Promise.resolve(null);
   }
 
   return new Promise((resolve) => {
     try {
       GM_xmlhttpRequest({
-        method: 'GET',
+        method: "GET",
         url: `https://kick.com/api/v2/channels/${encodeURIComponent(kickChannel)}`,
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
         },
         timeout: LIVE_CHECK_TIMEOUT_MS,
         onload: (response) => {

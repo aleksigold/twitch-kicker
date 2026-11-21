@@ -1,8 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { build as viteBuild, type Plugin } from 'vite';
-import { defineConfig } from 'vitest/config';
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { build as viteBuild, type Plugin } from "vite";
+import { defineConfig } from "vitest/config";
 
 interface PackageJson {
   version: string;
@@ -11,14 +11,14 @@ interface PackageJson {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
+  fs.readFileSync(path.join(__dirname, "package.json"), "utf8"),
 ) as PackageJson;
 const hlsPkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'node_modules', 'hls.js', 'package.json'), 'utf8')
+  fs.readFileSync(path.join(__dirname, "node_modules", "hls.js", "package.json"), "utf8"),
 ) as { version: string };
 
-const USERSCRIPT_FILENAME = 'twitch-kicker.user.js';
-const USERSCRIPT_OUTFILE = path.join(__dirname, 'dist', USERSCRIPT_FILENAME);
+const USERSCRIPT_FILENAME = "twitch-kicker.user.js";
+const USERSCRIPT_OUTFILE = path.join(__dirname, "dist", USERSCRIPT_FILENAME);
 
 const USERSCRIPT_BANNER = `// ==UserScript==
 // @name         Twitch Kicker - Replace Twitch Player with Kick
@@ -51,10 +51,10 @@ const USERSCRIPT_BANNER = `// ==UserScript==
 
 function userscriptPlugin(): Plugin {
   return {
-    name: 'twitch-kicker-userscript',
+    name: "twitch-kicker-userscript",
     generateBundle(_options, bundle) {
       for (const chunk of Object.values(bundle)) {
-        if (chunk.type === 'chunk' && chunk.fileName === USERSCRIPT_FILENAME) {
+        if (chunk.type === "chunk" && chunk.fileName === USERSCRIPT_FILENAME) {
           chunk.code = `${USERSCRIPT_BANNER}\n${chunk.code}`;
         }
       }
@@ -65,8 +65,8 @@ function userscriptPlugin(): Plugin {
       const rebuild = (): Promise<unknown> => {
         if (!pendingBuild) {
           pendingBuild = viteBuild({
-            configFile: path.join(__dirname, 'vite.config.ts'),
-            logLevel: 'warn',
+            configFile: path.join(__dirname, "vite.config.ts"),
+            logLevel: "warn",
           }).finally(() => {
             pendingBuild = null;
           });
@@ -76,8 +76,8 @@ function userscriptPlugin(): Plugin {
 
       void rebuild();
 
-      server.watcher.on('change', (changedPath) => {
-        if (changedPath.startsWith(path.join(__dirname, 'src'))) {
+      server.watcher.on("change", (changedPath) => {
+        if (changedPath.startsWith(path.join(__dirname, "src"))) {
           void rebuild().then(() => {
             server.config.logger.info(`[twitch-kicker] Rebuilt ${USERSCRIPT_FILENAME}`, {
               timestamp: true,
@@ -87,7 +87,7 @@ function userscriptPlugin(): Plugin {
       });
 
       server.middlewares.use(async (req, res, next) => {
-        if (req.url !== '/' && req.url !== `/${USERSCRIPT_FILENAME}`) {
+        if (req.url !== "/" && req.url !== `/${USERSCRIPT_FILENAME}`) {
           next();
           return;
         }
@@ -96,8 +96,8 @@ function userscriptPlugin(): Plugin {
             await rebuild();
           }
           res.statusCode = 200;
-          res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
-          res.setHeader('Cache-Control', 'no-store');
+          res.setHeader("Content-Type", "text/javascript; charset=utf-8");
+          res.setHeader("Cache-Control", "no-store");
           fs.createReadStream(USERSCRIPT_OUTFILE).pipe(res);
         } catch (err) {
           next(err);
@@ -110,35 +110,35 @@ function userscriptPlugin(): Plugin {
 export default defineConfig({
   plugins: [userscriptPlugin()],
   server: {
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     port: Number(process.env.PORT || 8787),
     strictPort: false,
   },
   build: {
-    target: 'es2022',
+    target: "es2022",
     minify: true,
     cssCodeSplit: false,
     emptyOutDir: true,
     lib: {
-      entry: path.join(__dirname, 'src', 'index.ts'),
-      name: 'TwitchKicker',
-      formats: ['iife'],
+      entry: path.join(__dirname, "src", "index.ts"),
+      name: "TwitchKicker",
+      formats: ["iife"],
       fileName: () => USERSCRIPT_FILENAME,
     },
     rolldownOptions: {
-      external: ['hls.js'],
+      external: ["hls.js"],
       output: {
         globals: {
-          'hls.js': 'Hls',
+          "hls.js": "Hls",
         },
       },
     },
   },
   test: {
-    environment: 'happy-dom',
+    environment: "happy-dom",
     environmentOptions: {
       happyDOM: {
-        url: 'https://www.twitch.tv/',
+        url: "https://www.twitch.tv/",
         settings: {
           enableIframePageLoading: true,
           navigation: {
@@ -148,9 +148,9 @@ export default defineConfig({
       },
     },
     coverage: {
-      provider: 'v8',
-      include: ['src/**/*.ts'],
-      exclude: ['src/**/*.test.ts', 'src/types.d.ts'],
+      provider: "v8",
+      include: ["src/**/*.ts"],
+      exclude: ["src/**/*.test.ts", "src/types.d.ts"],
       thresholds: {
         statements: 90,
         branches: 90,

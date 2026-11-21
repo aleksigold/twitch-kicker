@@ -4,7 +4,7 @@ import type {
   LoaderConfiguration,
   LoaderContext,
   LoaderStats,
-} from 'hls.js';
+} from "hls.js";
 
 function createLoadStats(): LoaderStats {
   return {
@@ -24,7 +24,7 @@ function parseHeaders(raw: string | undefined): Map<string, string> {
   const map = new Map<string, string>();
   if (!raw) return map;
   for (const line of raw.split(/\r?\n/)) {
-    const sep = line.indexOf(':');
+    const sep = line.indexOf(":");
     if (sep <= 0) continue;
     const key = line.slice(0, sep).trim().toLowerCase();
     const val = line.slice(sep + 1).trim();
@@ -52,7 +52,7 @@ export class GmHlsLoader implements Loader<LoaderContext> {
   }
 
   abort(): void {
-    if (this.requestHandle && typeof this.requestHandle.abort === 'function') {
+    if (this.requestHandle && typeof this.requestHandle.abort === "function") {
       this.stats.aborted = true;
       try {
         this.requestHandle.abort();
@@ -71,7 +71,7 @@ export class GmHlsLoader implements Loader<LoaderContext> {
   }
 
   getCacheAge(): number | null {
-    const age = this.getResponseHeader('age');
+    const age = this.getResponseHeader("age");
     if (!age) return null;
     const parsed = Number.parseFloat(age);
     return Number.isFinite(parsed) ? parsed : null;
@@ -80,7 +80,7 @@ export class GmHlsLoader implements Loader<LoaderContext> {
   load(
     context: LoaderContext,
     config: LoaderConfiguration,
-    callbacks: LoaderCallbacks<LoaderContext>
+    callbacks: LoaderCallbacks<LoaderContext>,
   ): void {
     this.context = context;
     this.callbacks = callbacks;
@@ -89,13 +89,13 @@ export class GmHlsLoader implements Loader<LoaderContext> {
     this.stats.loading.start = performance.now();
     this.stats.loading.first = 0;
 
-    const headers: Record<string, string> = { ...(context.headers ?? {}) };
-    if (typeof context.rangeStart === 'number') {
-      const end = typeof context.rangeEnd === 'number' ? String(context.rangeEnd - 1) : '';
+    const headers: Record<string, string> = { ...context.headers };
+    if (typeof context.rangeStart === "number") {
+      const end = typeof context.rangeEnd === "number" ? String(context.rangeEnd - 1) : "";
       headers.Range = `bytes=${context.rangeStart}-${end}`;
     }
 
-    const isBinary = context.responseType === 'arraybuffer';
+    const isBinary = context.responseType === "arraybuffer";
     const timeout = config.loadPolicy?.maxLoadTimeMs || config.timeout || 15000;
 
     const markFirstByte = (): void => {
@@ -105,10 +105,10 @@ export class GmHlsLoader implements Loader<LoaderContext> {
     };
 
     const handle = GM_xmlhttpRequest({
-      method: 'GET',
+      method: "GET",
       url: context.url,
       headers,
-      responseType: isBinary ? 'arraybuffer' : 'text',
+      responseType: isBinary ? "arraybuffer" : "text",
       timeout,
       onreadystatechange: (res) => {
         if (this.stats.aborted) return;
@@ -119,8 +119,8 @@ export class GmHlsLoader implements Loader<LoaderContext> {
       onprogress: (res) => {
         if (this.stats.aborted) return;
         markFirstByte();
-        if (typeof res.loaded === 'number') this.stats.loaded = res.loaded;
-        if (typeof res.total === 'number' && res.total > 0) this.stats.total = res.total;
+        if (typeof res.loaded === "number") this.stats.loaded = res.loaded;
+        if (typeof res.total === "number" && res.total > 0) this.stats.total = res.total;
       },
       onload: (res) => {
         this.requestHandle = null;
@@ -139,7 +139,7 @@ export class GmHlsLoader implements Loader<LoaderContext> {
         if (res.status >= 200 && res.status < 300) {
           const data = isBinary
             ? (res.response as ArrayBuffer)
-            : typeof res.response === 'string'
+            : typeof res.response === "string"
               ? res.response
               : res.responseText;
 
@@ -147,7 +147,7 @@ export class GmHlsLoader implements Loader<LoaderContext> {
             ? data instanceof ArrayBuffer
               ? data.byteLength
               : 0
-            : typeof data === 'string'
+            : typeof data === "string"
               ? data.length
               : 0;
 
@@ -165,14 +165,14 @@ export class GmHlsLoader implements Loader<LoaderContext> {
             },
             this.stats,
             context,
-            null
+            null,
           );
         } else {
           callbacks.onError(
             { code: res.status, text: res.statusText || `HTTP ${res.status}` },
             context,
             null,
-            this.stats
+            this.stats,
           );
         }
       },
@@ -180,10 +180,10 @@ export class GmHlsLoader implements Loader<LoaderContext> {
         this.requestHandle = null;
         if (this.stats.aborted) return;
         callbacks.onError(
-          { code: 0, text: err instanceof Error ? err.message : 'Network error' },
+          { code: 0, text: err instanceof Error ? err.message : "Network error" },
           context,
           null,
-          this.stats
+          this.stats,
         );
       },
       ontimeout: () => {

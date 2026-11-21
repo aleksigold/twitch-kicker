@@ -36,20 +36,23 @@ You have three ways to add streamers:
 3. **In-script defaults**: Edit `DEFAULT_WHITELIST` in [`src/config.ts`](./src/config.ts) and rebuild before first run:
    ```js
    const DEFAULT_WHITELIST = {
-     sick_nerd: 'sick_nerd',
-     twitch_name: 'different_kick_name',
+     sick_nerd: "sick_nerd",
+     twitch_name: "different_kick_name",
    };
    ```
 
 ## Troubleshooting
 
 ### Kick player shows a blocked frame / CSP console error
+
 If Twitch's Content Security Policy (`frame-src`) blocks `https://player.kick.com` in your browser:
+
 1. Open **Tampermonkey Dashboard → Settings**.
 2. Set **Config mode** to **Advanced**.
 3. Under **Security**, set **Modify existing content security policy (CSP) headers** to **Yes** (or **Remove entirely** if needed), then reload Twitch.
 
 ### Autoplay starts paused or muted
+
 Modern browsers block unmuted autoplay before you interact with the page. Enable **Start Kick stream muted** in the Whitelist settings modal if you want streams to start playing immediately on page load.
 
 ## Development
@@ -76,4 +79,3 @@ npm run test:watch
 # Build and serve dist/twitch-kicker.user.js locally at http://127.0.0.1:8787/twitch-kicker.user.js
 npm start
 ```
-

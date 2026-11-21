@@ -183,7 +183,9 @@
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
 }
 
 .tk-action-btn--secondary {
