@@ -1,0 +1,218 @@
+#tk-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483640;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.tk-modal {
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: #18181b;
+  color: #efeff1;
+  border: 1px solid #303036;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+}
+
+.tk-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #2b2b31;
+}
+
+.tk-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tk-modal-close {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: #adadb8;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.tk-modal-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.tk-modal-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tk-form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.tk-input {
+  flex: 1;
+  min-width: 0;
+  background: #0e0e10;
+  border: 1px solid #3a3a42;
+  border-radius: 6px;
+  color: #efeff1;
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.tk-input:focus {
+  border-color: #53fc18;
+}
+
+.tk-btn-primary {
+  appearance: none;
+  background: #53fc18;
+  color: #0b0e0f;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tk-btn-primary:hover {
+  background: #6bff38;
+}
+
+.tk-btn-secondary {
+  appearance: none;
+  background: #2b2b31;
+  color: #efeff1;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tk-btn-secondary:hover {
+  background: #383840;
+}
+
+.tk-btn-danger {
+  appearance: none;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tk-btn-danger:hover {
+  background: rgba(248, 113, 113, 0.14);
+}
+
+.tk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.tk-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #111114;
+  border: 1px solid #26262c;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.tk-list-mapping {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tk-tag-twitch {
+  color: #bf94ff;
+  font-weight: 600;
+}
+
+.tk-tag-kick {
+  color: #53fc18;
+  font-weight: 600;
+}
+
+.tk-empty {
+  color: #adadb8;
+  font-size: 13px;
+  text-align: center;
+  padding: 16px 8px;
+  background: #111114;
+  border: 1px dashed #2e2e36;
+  border-radius: 6px;
+}
+
+.tk-settings-section {
+  border-top: 1px solid #2b2b31;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tk-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tk-hint {
+  color: #adadb8;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.tk-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid #2b2b31;
+  background: #141417;
+}
