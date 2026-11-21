@@ -1,0 +1,39 @@
+{
+  "name": "twitch-kicker",
+  "version": "0.0.0",
+  "description": "Replaces the Twitch video player with the Kick stream player for whitelisted streamers while keeping Twitch chat and layout intact.",
+  "type": "module",
+  "main": "dist/twitch-kicker.user.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aleksigold/twitch-kicker.git"
+  },
+  "homepage": "https://github.com/aleksigold/twitch-kicker#readme",
+  "bugs": {
+    "url": "https://github.com/aleksigold/twitch-kicker/issues"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "vite"
+  },
+  "keywords": [
+    "tampermonkey",
+    "userscript",
+    "twitch",
+    "kick"
+  ],
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "happy-dom": "^21.0.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  },
+  "dependencies": {
+    "hls.js": "^1.7.4"
+  }
+}
