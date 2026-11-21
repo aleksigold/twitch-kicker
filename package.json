@@ -1,6 +1,6 @@
 {
   "name": "twitch-kicker",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Replaces the Twitch video player with the Kick stream player for whitelisted streamers while keeping Twitch chat and layout intact.",
   "type": "module",
   "main": "dist/twitch-kicker.user.js",
