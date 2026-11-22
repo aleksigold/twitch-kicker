@@ -22,7 +22,7 @@ A Tampermonkey userscript that replaces the Twitch video player with the Kick st
    npm install
    npm run build
    ```
-   Then open `dist/twitch-kicker.user.js` in Tampermonkey (or run `npm start` and open `http://127.0.0.1:8787/twitch-kicker.user.js`).
+   Then open `dist/twitch-kicker.user.js` in Tampermonkey (or run `npm start` and open `http://127.0.0.1:8787/` to install the live-reloading dev script via `vite-plugin-monkey`).
 4. Visit any Twitch channel page (`https://www.twitch.tv/<channel>`).
 
 ## Usage
@@ -76,6 +76,6 @@ npm test
 # Run tests in watch mode
 npm run test:watch
 
-# Build and serve dist/twitch-kicker.user.js locally at http://127.0.0.1:8787/twitch-kicker.user.js
+# Start the Vite dev server (vite-plugin-monkey) at http://127.0.0.1:8787/
 npm start
 ```
